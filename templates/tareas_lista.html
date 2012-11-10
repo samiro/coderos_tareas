@@ -1,10 +1,11 @@
 <table>
 	<thead>
 		<tr>
-			<td>Titulo</td>
-			<td>Descripción</td>
-			<td>Estado</td>
-			<td>Fecha de creación</td>
+			<th>Titulo</th>
+			<th>Descripción</th>
+			<th>Estado</th>
+			<th>Fecha de creación</th>
+			<th>Opciones</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -14,6 +15,9 @@
 			<td>{{ tarea.descripcion }}</td>
 			<td>{{ tarea.estado }}</td>
 			<td>{{ tarea.creado }}</td>
+			<td><button onclick="eliminar_tarea('{{ tarea.key() }}')">Eliminar</button>
+				<a href="/tareas/editar/{{ tarea.key() }}">Editar</a>
+			</td>
 		</tr>
 		{% endfor %}
 	</tbody>

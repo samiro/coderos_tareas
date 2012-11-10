@@ -9,6 +9,14 @@ handlers:
   static_files: imagenes/favicon.ico
   upload: imagenes/favicon\.ico
 
+- url: /js/(.*)
+  static_files: javascript/\1
+  upload: javascript/(.*)
+
+- url: /css/(.*)
+  static_files: stylesheet/\1
+  upload: stylesheet/(.*)
+
 - url: .*
   script: main.app
 

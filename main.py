@@ -1,6 +1,7 @@
 import webapp2
 import jinja2
 import os
+import json
 
 from google.appengine.api import users
 from modelo import *
@@ -23,7 +24,7 @@ class Principal(webapp2.RequestHandler):
 			self.response.out.write(tpl.render(variables))
 
 class Tareas(webapp2.RequestHandler):
-	def get(self, accion=None):
+	def get(self, accion=None, key_tarea=None):
 		if users.is_current_user_admin():
 			
 			variables = {
@@ -40,6 +41,10 @@ class Tareas(webapp2.RequestHandler):
 				variables['tpl_include'] = 'templates/tareas_lista.html'
 				variables['titulo'] = 'Todas las tareas'
 				variables['tareas'] = Tarea.all()
+			elif accion == "editar":
+				variables['tpl_include'] = 'templates/editar_tarea.html'
+				variables['titulo'] = 'Editar una tarea'
+				variables['tarea'] = db.get(key_tarea)
 			else:
 				variables['tpl_include'] = 'templates/admin.html'
 				variables['titulo'] = 'Inicio'
@@ -49,15 +54,48 @@ class Tareas(webapp2.RequestHandler):
 		else:
 			self.redirect('/')
 
-	def post(self, accion=None):
+	def post(self, accion=None, key_tarea=None):
 		if users.is_current_user_admin():
-			inp_titulo = self.request.get('titulo')
-			inp_descripcion = self.request.get('descripcion')
-			ntarea = Tarea(titulo=inp_titulo,descripcion=inp_descripcion)
-			ntarea.put()
+			if accion == "nueva":
+				inp_titulo = self.request.get('titulo')
+				inp_descripcion = self.request.get('descripcion')
+				ntarea = Tarea(titulo=inp_titulo,descripcion=inp_descripcion)
+				ntarea.put()
+				
+			elif accion == "editar":
+				tarea = db.get(key_tarea)
+				tarea.titulo = self.request.get('titulo')
+				tarea.descripcion = self.request.get('descripcion')
+				tarea.estado = self.request.get('estado')
+				tarea.put()
+
 			self.redirect('/tareas')
 		else:
 			self.redirect('/')
+
+class Ajax(webapp2.RequestHandler):
+	def get(self, accion=None, key_tarea=None):
+		if users.is_current_user_admin():
+			if accion == "delete" and key_tarea != None:
+				tarea = db.get(key_tarea)
+				tarea.delete()
+				respuesta = {
+					'eliminado': True
+				}
+				self.response.headers.add_header('content-type', 'application/json', charset='utf-8')
+				self.response.out.write(json.dumps(respuesta))
+			else:
+				respuesta = {
+					'eliminado': False
+				}
+				self.response.headers.add_header('content-type', 'application/json', charset='utf-8')
+				self.response.out.write(json.dumps(respuesta))
+		else:
+			respuesta = {
+				'eliminado': False
+			}
+			self.response.headers.add_header('content-type', 'application/json', charset='utf-8')
+			self.response.out.write(json.dumps(respuesta))
 
 #regex python
 #tareas/
@@ -67,5 +105,7 @@ class Tareas(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
 	('/', Principal),
 	(r'/tareas', Tareas),
-	(r'/tareas/(\w+)', Tareas)
+	(r'/tareas/(\w+)', Tareas),
+	(r'/tareas/(\w+)/(\w*\-*\w*)', Tareas),
+	(r'/ajax/(delete)/(\w*\-*\w*)', Ajax)
 ], debug=True)

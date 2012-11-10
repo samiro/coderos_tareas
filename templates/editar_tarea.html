@@ -1,0 +1,17 @@
+<form action="/tareas/editar/{{ tarea.key() }}" method="POST">
+	<div><label>Titulo de la tarea:</label><input name="titulo" value="{{ tarea.titulo }}"></div>
+	<div><label>Descripción:</label><textarea name="descripcion">{{ tarea.descripcion }}</textarea></div>
+	<div>
+		<label>Estado:</label>
+		<select name="estado" value="">
+			{% if tarea.estado == "realizado" %}
+				<option selected value="realizado">Realizado</option>
+				<option value="pendiente">Pendiente</option>
+			{% else %}
+				<option value="realizado">Realizado</option>
+				<option selected value="pendiente">Pendiente</option>
+			{% endif%}	
+		</select>
+	</div>
+	<div><button>Actualizar tarea</button></div>
+</form>
