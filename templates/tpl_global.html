@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<title>{{ titulo }} | Coderos Tareas</title>
+</head>
+<body>
+	<header>
+		<h1>Coderos Tareas - {{ titulo }}</h1>
+		<h4>{{ usuario.nickname() }}</h4>
+		<nav>
+			<a href="/tareas/nuevo">Nueva tarea</a> - 
+			<a href="/tareas/todas">Todas</a>
+		</nav>
+	</header>
+	<section>
+		{% include tpl_include %}
+	</section>
+	<footer>
+		Hecho por la comunidad Coderos <a href="{{ link_cerrar }}">Cerrar sesion</a>
+	</footer>
+</body>
+</html>

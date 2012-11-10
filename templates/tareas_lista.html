@@ -1,0 +1,20 @@
+<table>
+	<thead>
+		<tr>
+			<td>Titulo</td>
+			<td>Descripción</td>
+			<td>Estado</td>
+			<td>Fecha de creación</td>
+		</tr>
+	</thead>
+	<tbody>
+		{% for tarea in tareas%}
+		<tr>
+			<td>{{ tarea.titulo }}</td>
+			<td>{{ tarea.descripcion }}</td>
+			<td>{{ tarea.estado }}</td>
+			<td>{{ tarea.creado }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
